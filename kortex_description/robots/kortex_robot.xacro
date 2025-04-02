@@ -28,7 +28,7 @@
     isaac_joint_commands:=/isaac_joint_commands
     isaac_joint_states:=/isaac_joint_states
     use_external_cable:=false
-    initial_positions:=${dict(joint_1=0.0,joint_2=0.0,joint_3=0.0,joint_4=0.0,joint_5=0.0,joint_6=0.0,joint_7=0.0)}
+    initial_positions:=${dict(joint_1=0.0,joint_2=0.0,joint_3=0.0,joint_4=0.0,joint_5=0.0,joint_6=0.0,joint_7=0.0,joint_8=0.0)}
     architectural_calibrations:=${
     dict(
       joint_1=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
@@ -37,7 +37,8 @@
       joint_4=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
       joint_5=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
       joint_6=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
-      joint_7=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0)
+      joint_7=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
+      joint_8=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0)
     )}
     gripper_max_velocity:=100.0
     gripper_max_force:=100.0

@@ -32,7 +32,7 @@
     isaac_joint_commands:=/isaac_joint_commands
     isaac_joint_states:=/isaac_joint_states
     use_external_cable:=false
-    initial_positions:=${dict(joint_1=0.0,joint_2=0.0,joint_3=0.0,joint_4=0.0,joint_5=0.0,joint_6=0.0,joint_7=0.0)}
+    initial_positions:=${dict(joint_1=0.0,joint_2=0.0,joint_3=0.0,joint_4=0.0,joint_5=0.0,joint_6=0.0,joint_7=0.0,joint_8=0.0)}
     architectural_calibrations:=${
     dict(
       joint_1=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
@@ -41,7 +41,8 @@
       joint_4=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
       joint_5=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
       joint_6=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
-      joint_7=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0)
+      joint_7=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
+      joint_8=dict(x=0, y=0, z=0, roll=0, pitch=0, yaw=0),
     )}" >
 
     <xacro:if value="${use_kortex_control}">
@@ -99,6 +100,7 @@
         </geometry>
       </collision>
     </link>
+    <link name="uncalibrated_shoulder_link${prefix}"/>
     <link name="shoulder_link${prefix}">
       <inertial>
         <origin xyz="-2.3E-05 -0.010364 -0.07336" rpy="0 0 0" />
@@ -126,12 +128,12 @@
       name="joint_1${prefix}"
       type="revolute">
         <origin
-          xyz="${architectural_calibrations['joint_1']['x']} ${architectural_calibrations['joint_1']['y']} ${architectural_calibrations['joint_1']['z'] + 0.15643}"
-          rpy="${architectural_calibrations['joint_1']['roll'] + PI} ${architectural_calibrations['joint_1']['pitch']} ${architectural_calibrations['joint_1']['yaw']}" />
+          xyz="0 0 0.15643"
+          rpy="${PI} 0 0" />
         <parent
           link="base_link${prefix}" />
         <child
-          link="shoulder_link${prefix}" />
+          link="uncalibrated_shoulder_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -145,12 +147,12 @@
       <joint
         name="joint_1${prefix}"
         type="continuous">
-        <origin xyz="${architectural_calibrations['joint_1']['x']} ${architectural_calibrations['joint_1']['y']} ${architectural_calibrations['joint_1']['z'] + 0.15643}"
-          rpy="${architectural_calibrations['joint_1']['roll'] + PI} ${architectural_calibrations['joint_1']['pitch']} ${architectural_calibrations['joint_1']['yaw']}" />
+        <origin xyz="0 0 0.15643"
+          rpy="${PI} 0 0" />
         <parent
           link="base_link${prefix}" />
         <child
-          link="shoulder_link${prefix}" />
+          link="uncalibrated_shoulder_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -158,6 +160,18 @@
           velocity="1.3963" />
       </joint>
     </xacro:unless>
+    <joint
+      name="calibrated_joint_1${prefix}"
+      type="fixed">
+        <origin
+          xyz="${architectural_calibrations['joint_1']['x']} ${architectural_calibrations['joint_1']['y']} ${architectural_calibrations['joint_1']['z']}"
+          rpy="${architectural_calibrations['joint_1']['roll']} ${architectural_calibrations['joint_1']['pitch']} ${architectural_calibrations['joint_1']['yaw']}" />
+        <parent
+          link="uncalibrated_shoulder_link${prefix}" />
+        <child
+          link="shoulder_link${prefix}" />
+    </joint>
+    <link name="uncalibrated_half_arm_1_link${prefix}"/>
     <link name="half_arm_1_link${prefix}">
       <inertial>
         <origin xyz="-4.4E-05 -0.09958 -0.013278" rpy="0 0 0" />
@@ -184,16 +198,28 @@
       name="joint_2${prefix}"
       type="revolute">
       <origin
-        xyz="${architectural_calibrations['joint_2']['x']} ${architectural_calibrations['joint_2']['y'] + 0.005375} ${architectural_calibrations['joint_2']['z'] - 0.12838}"
-        rpy="${architectural_calibrations['joint_2']['roll'] + PI/2} ${architectural_calibrations['joint_2']['pitch']} ${architectural_calibrations['joint_2']['yaw']}" />
+        xyz="0 0.005375 -0.12838"
+        rpy="${PI/2} 0 0" />
       <parent
         link="shoulder_link${prefix}" />
       <child
-        link="half_arm_1_link${prefix}" />
+        link="uncalibrated_half_arm_1_link${prefix}" />
       <axis
         xyz="0 0 1" />
       <limit lower="-2.24" upper="2.24" effort="39" velocity="1.3963" />
     </joint>
+    <joint
+      name="calibrated_joint_2${prefix}"
+      type="fixed">
+      <origin
+        xyz="${architectural_calibrations['joint_2']['x']} ${architectural_calibrations['joint_2']['y']} ${architectural_calibrations['joint_2']['z']}"
+        rpy="${architectural_calibrations['joint_2']['roll']} ${architectural_calibrations['joint_2']['pitch']} ${architectural_calibrations['joint_2']['yaw']}" />
+      <parent
+        link="uncalibrated_half_arm_1_link${prefix}" />
+      <child
+        link="half_arm_1_link${prefix}" />
+    </joint>
+    <link name="uncalibrated_half_arm_2_link${prefix}"/>
     <link name="half_arm_2_link${prefix}">
       <inertial>
         <origin xyz="-4.4E-05 -0.006641 -0.117892" rpy="0 0 0" />
@@ -220,13 +246,13 @@
       <joint
         name="joint_3${prefix}"
         type="revolute">
-        <origin 
-          xyz="${architectural_calibrations['joint_3']['x']} ${architectural_calibrations['joint_3']['y'] - 0.21038} ${architectural_calibrations['joint_3']['z'] - 0.006375}"
-          rpy="${architectural_calibrations['joint_3']['roll'] -PI/2} ${architectural_calibrations['joint_3']['pitch']} ${architectural_calibrations['joint_3']['yaw']}" />
+        <origin
+          xyz="0 -0.21038 -0.006375"
+          rpy="${-PI/2} 0 0" />
         <parent
           link="half_arm_1_link${prefix}" />
         <child
-          link="half_arm_2_link${prefix}" />
+          link="uncalibrated_half_arm_2_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -240,13 +266,13 @@
       <joint
         name="joint_3${prefix}"
         type="continuous">
-        <origin 
-          xyz="${architectural_calibrations['joint_3']['x']} ${architectural_calibrations['joint_3']['y'] - 0.21038} ${architectural_calibrations['joint_3']['z'] - 0.006375}"
-          rpy="${architectural_calibrations['joint_3']['roll'] - PI/2} ${architectural_calibrations['joint_3']['pitch']} ${architectural_calibrations['joint_3']['yaw']}" />
+        <origin
+          xyz="0 -0.21038 -0.006375"
+          rpy="${-PI/2} 0 0" />
         <parent
           link="half_arm_1_link${prefix}" />
         <child
-          link="half_arm_2_link${prefix}" />
+          link="uncalibrated_half_arm_2_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -254,6 +280,18 @@
           velocity="1.3963" />
       </joint>
     </xacro:unless>
+    <joint
+        name="calibrated_joint_3${prefix}"
+        type="fixed">
+        <origin
+          xyz="${architectural_calibrations['joint_3']['x']} ${architectural_calibrations['joint_3']['y']} ${architectural_calibrations['joint_3']['z']}"
+          rpy="${architectural_calibrations['joint_3']['roll']} ${architectural_calibrations['joint_3']['pitch']} ${architectural_calibrations['joint_3']['yaw']}" />
+        <parent
+          link="uncalibrated_half_arm_2_link${prefix}" />
+        <child
+          link="half_arm_2_link${prefix}" />
+    </joint>
+    <link name="uncalibrated_forearm_link${prefix}"/>
     <link name="forearm_link${prefix}">
       <inertial>
         <origin xyz="-1.8E-05 -0.075478 -0.015006" rpy="0 0 0" />
@@ -279,17 +317,29 @@
     <joint
       name="joint_4${prefix}"
       type="revolute">
-      <origin 
-        xyz="${architectural_calibrations['joint_4']['x']} ${architectural_calibrations['joint_4']['y'] + 0.006375} ${architectural_calibrations['joint_4']['z'] - 0.21038}"
-        rpy="${architectural_calibrations['joint_4']['roll'] + PI/2} ${architectural_calibrations['joint_4']['pitch']} ${architectural_calibrations['joint_4']['yaw']}" />
+      <origin
+        xyz="0 0.006375 -0.21038"
+        rpy="${PI/2} 0 0" />
       <parent
         link="half_arm_2_link${prefix}" />
       <child
-        link="forearm_link${prefix}" />
+        link="uncalibrated_forearm_link${prefix}" />
       <axis
         xyz="0 0 1" />
       <limit lower="-2.57" upper="2.57" effort="39" velocity="1.3963" />
     </joint>
+    <joint
+      name="calibrated_joint_4${prefix}"
+      type="fixed">
+      <origin
+        xyz="${architectural_calibrations['joint_4']['x']} ${architectural_calibrations['joint_4']['y']} ${architectural_calibrations['joint_4']['z']}"
+        rpy="${architectural_calibrations['joint_4']['roll']} ${architectural_calibrations['joint_4']['pitch']} ${architectural_calibrations['joint_4']['yaw']}" />
+      <parent
+        link="uncalibrated_forearm_link${prefix}" />
+      <child
+        link="forearm_link${prefix}" />
+    </joint>
+    <link name="uncalibrated_spherical_wrist_1_link${prefix}"/>
     <link name="spherical_wrist_1_link${prefix}">
       <inertial>
         <origin xyz="1E-06 -0.009432 -0.063883" rpy="0 0 0" />
@@ -316,13 +366,13 @@
       <joint
         name="joint_5${prefix}"
         type="revolute">
-        <origin 
-          xyz="${architectural_calibrations['joint_5']['x']} ${architectural_calibrations['joint_5']['y'] - 0.20843} ${architectural_calibrations['joint_5']['z'] - 0.006375}"
-          rpy="${architectural_calibrations['joint_5']['roll'] - PI/2} ${architectural_calibrations['joint_5']['pitch']} ${architectural_calibrations['joint_5']['yaw']}" />
+        <origin
+          xyz="0  -0.20843 -0.006375"
+          rpy="${-PI/2} 0 0" />
         <parent
           link="forearm_link${prefix}" />
         <child
-          link="spherical_wrist_1_link${prefix}" />
+          link="uncalibrated_spherical_wrist_1_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -336,13 +386,13 @@
       <joint
         name="joint_5${prefix}"
         type="continuous">
-        <origin 
-          xyz="${architectural_calibrations['joint_5']['x']} ${architectural_calibrations['joint_5']['y'] - 0.20843} ${architectural_calibrations['joint_5']['z'] - 0.006375}"
-          rpy="${architectural_calibrations['joint_5']['roll'] - PI/2} ${architectural_calibrations['joint_5']['pitch']} ${architectural_calibrations['joint_5']['yaw']}" />
+        <origin
+          xyz="0  -0.20843 -0.006375"
+          rpy="${-PI/2} 0 0" />
         <parent
           link="forearm_link${prefix}" />
         <child
-          link="spherical_wrist_1_link${prefix}" />
+          link="uncalibrated_spherical_wrist_1_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -350,6 +400,18 @@
           velocity="1.2218" />
       </joint>
     </xacro:unless>
+    <joint
+        name="calibrated_joint_5${prefix}"
+        type="fixed">
+        <origin
+          xyz="${architectural_calibrations['joint_5']['x']} ${architectural_calibrations['joint_5']['y']} ${architectural_calibrations['joint_5']['z']}"
+          rpy="${architectural_calibrations['joint_5']['roll']} ${architectural_calibrations['joint_5']['pitch']} ${architectural_calibrations['joint_5']['yaw']}" />
+        <parent
+          link="uncalibrated_spherical_wrist_1_link${prefix}" />
+        <child
+          link="spherical_wrist_1_link${prefix}" />
+    </joint>
+    <link name="uncalibrated_spherical_wrist_2_link${prefix}"/>
     <link name="spherical_wrist_2_link${prefix}">
       <inertial>
         <origin xyz="1E-06 -0.045483 -0.00965" rpy="0 0 0" />
@@ -375,17 +437,29 @@
     <joint
       name="joint_6${prefix}"
       type="revolute">
-      <origin 
-        xyz="${architectural_calibrations['joint_6']['x']} ${architectural_calibrations['joint_6']['y'] + 0.00017505} ${architectural_calibrations['joint_6']['z'] - 0.10593}"
-        rpy="${architectural_calibrations['joint_6']['roll'] + PI/2} ${architectural_calibrations['joint_6']['pitch']} ${architectural_calibrations['joint_6']['yaw']}" />
+      <origin
+        xyz="0 0.00017505 -0.10593"
+        rpy="${PI/2} 0 0" />
       <parent
         link="spherical_wrist_1_link${prefix}" />
       <child
-        link="spherical_wrist_2_link${prefix}" />
+        link="uncalibrated_spherical_wrist_2_link${prefix}" />
       <axis
         xyz="0 0 1" />
       <limit lower="-2.09" upper="2.09" effort="9" velocity="1.2218" />
     </joint>
+    <joint
+      name="calibrated_joint_6${prefix}"
+      type="fixed">
+      <origin
+        xyz="${architectural_calibrations['joint_6']['x']} ${architectural_calibrations['joint_6']['y']} ${architectural_calibrations['joint_6']['z']}"
+        rpy="${architectural_calibrations['joint_6']['roll']} ${architectural_calibrations['joint_6']['pitch']} ${architectural_calibrations['joint_6']['yaw']}" />
+      <parent
+        link="uncalibrated_spherical_wrist_2_link${prefix}" />
+      <child
+        link="spherical_wrist_2_link${prefix}" />
+    </joint>
+    <link name="uncalibrated_bracelet_link${prefix}"/>
     <xacro:if value="${vision}">
     <link name="bracelet_link${prefix}">
       <inertial>
@@ -438,13 +512,13 @@
       <joint
         name="joint_7${prefix}"
         type="revolute">
-        <origin 
-          xyz="${architectural_calibrations['joint_7']['x']} ${architectural_calibrations['joint_7']['y'] - 0.10593} ${architectural_calibrations['joint_7']['z'] - 0.00017505}"
-          rpy="${architectural_calibrations['joint_7']['roll'] - PI/2} ${architectural_calibrations['joint_7']['pitch']} ${architectural_calibrations['joint_7']['yaw']}" />
+        <origin
+          xyz="0 -0.10593 -0.00017505"
+          rpy="${-PI/2} 0 0" />
         <parent
           link="spherical_wrist_2_link${prefix}" />
         <child
-          link="bracelet_link${prefix}" />
+          link="uncalibrated_bracelet_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -458,13 +532,13 @@
       <joint
         name="joint_7${prefix}"
         type="continuous">
-        <origin 
-          xyz="${architectural_calibrations['joint_7']['x']} ${architectural_calibrations['joint_7']['y'] - 0.10593} ${architectural_calibrations['joint_7']['z'] - 0.00017505}"
-          rpy="${architectural_calibrations['joint_7']['roll'] - PI/2} ${architectural_calibrations['joint_7']['pitch']} ${architectural_calibrations['joint_7']['yaw']}" />
+        <origin
+          xyz="0 -0.10593 -0.00017505"
+          rpy="${-PI/2} 0 0" />
         <parent
           link="spherical_wrist_2_link${prefix}" />
         <child
-          link="bracelet_link${prefix}" />
+          link="uncalibrated_bracelet_link${prefix}" />
         <axis
           xyz="0 0 1" />
         <limit
@@ -472,6 +546,18 @@
           velocity="1.2218" />
       </joint>
     </xacro:unless>
+    <joint
+        name="calibrated_joint_7${prefix}"
+        type="fixed">
+        <origin
+          xyz="${architectural_calibrations['joint_7']['x']} ${architectural_calibrations['joint_7']['y']} ${architectural_calibrations['joint_7']['z']}"
+          rpy="${architectural_calibrations['joint_7']['roll']} ${architectural_calibrations['joint_7']['pitch']} ${architectural_calibrations['joint_7']['yaw']}" />
+        <parent
+          link="uncalibrated_bracelet_link${prefix}" />
+        <child
+          link="bracelet_link${prefix}" />
+    </joint>
+    <link name="uncalibrated_end_effector_link${prefix}"/>
     <link name="end_effector_link${prefix}" />
     <joint
       name="end_effector${prefix}"
@@ -479,6 +565,19 @@
       <origin xyz="0 0 -0.0615250000000001" rpy="3.14159265358979 1.09937075168372E-32 0" />
       <parent
         link="bracelet_link${prefix}" />
+      <child
+        link="uncalibrated_end_effector_link${prefix}" />
+      <axis
+        xyz="0 0 0" />
+    </joint>
+    <joint
+      name="calibrated_end_effector${prefix}"
+      type="fixed">
+      <origin
+          xyz="${architectural_calibrations['joint_8']['x']} ${architectural_calibrations['joint_8']['y']} ${architectural_calibrations['joint_8']['z']}"
+          rpy="${architectural_calibrations['joint_8']['roll']} ${architectural_calibrations['joint_8']['pitch']} ${architectural_calibrations['joint_8']['yaw']}" />
+      <parent
+        link="uncalibrated_end_effector_link${prefix}" />
       <child
         link="end_effector_link${prefix}" />
       <axis
