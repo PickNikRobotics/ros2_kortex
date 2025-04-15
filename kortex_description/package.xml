@@ -15,7 +15,8 @@ for KINOVA KORTEX™ arms and supported grippers</p>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>gz_ros2_control</exec_depend>
+  <exec_depend condition="$ROS_DISTRO == humble">ign_ros2_control</exec_depend>
+  <exec_depend condition="$ROS_DISTRO != humble">gz_ros2_control</exec_depend>
   <exec_depend>joint_state_publisher_gui</exec_depend>
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>joint_trajectory_controller</exec_depend>
