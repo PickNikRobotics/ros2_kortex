@@ -12,6 +12,15 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra)
 endif()
 
+# Detect ROS distro for API compatibility
+if(DEFINED ENV{ROS_DISTRO})
+  if("$ENV{ROS_DISTRO}" STREQUAL "jazzy")
+    add_compile_definitions(ROS_DISTRO_JAZZY)
+  elseif("$ENV{ROS_DISTRO}" STREQUAL "humble")
+    add_compile_definitions(ROS_DISTRO_HUMBLE)
+  endif()
+endif()
+
 # this is needed by the kortex_api to tell it we are compiling for linux
 add_definitions(-D_OS_UNIX=1)
 
