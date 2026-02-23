@@ -6,9 +6,6 @@ on:
   push:
     branches:
       - main
-  schedule:
-    # Run every morning to detect flakiness and broken dependencies
-    - cron: '13 4 * * *'
 
 jobs:
   rolling_semi_binary:

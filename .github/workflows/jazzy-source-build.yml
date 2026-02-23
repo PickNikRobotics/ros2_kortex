@@ -5,9 +5,6 @@ on:
       # try to keep jazzy and rolling(main) in sync
       - jazzy
       - main
-  schedule:
-    # Run every morning to detect flakiness and broken dependencies
-    - cron: '43 1 * * *'
 
 jobs:
   jazzy_source:

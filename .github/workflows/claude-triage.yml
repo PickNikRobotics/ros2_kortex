@@ -1,8 +1,6 @@
 name: Claude Daily Issue Triage
 
 on:
-  schedule:
-    - cron: "0 14 * * 1"   # runs daily at 09:00 EST
   workflow_dispatch:      # allows manual trigger
 
 jobs:
