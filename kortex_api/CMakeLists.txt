@@ -3,6 +3,11 @@ include(FetchContent)
 
 project(kortex_api)
 
+# Timestamp extracted archives at extraction time so a URL change forces a rebuild.
+if(POLICY CMP0135)
+  cmake_policy(SET CMP0135 NEW)
+endif()
+
 #Future:
 # convert API_URL components from CMAKE_SYSTEM variables.
 # The kinova artifactory server artifacts have slightly different expectations and they need some transformations
