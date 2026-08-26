@@ -3,6 +3,11 @@ include(FetchContent)
 
 project(kortex_driver)
 
+# Timestamp extracted archives at extraction time so a URL change forces a rebuild.
+if(POLICY CMP0135)
+  cmake_policy(SET CMP0135 NEW)
+endif()
+
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
